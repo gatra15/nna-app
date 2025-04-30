@@ -1,31 +1,43 @@
 <template>
-  <div class="sm:ml-64" :style="{ paddingTop: navbarHeight + 'px', height: `calc(100vh)` }">
+  <div class="container mx-auto bg-white rounded-lg shadow-lg min-h-full p-4">
     <!-- Title Navbar -->
-    <div class="bg-white dark:bg-gray-800 shadow-sm px-4 py-2 items-center flex justify-between">
+    <div class="bg-matcha rounded-sm shadow-xl px-4 py-2 items-center flex justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ title }}</h1>
-        <p class="text-md text-gray-300 dark:text-white">{{ sub_title }}</p>
+        <h1 class="text-sm font-bold text-lempung-100">
+          {{ title }}
+        </h1>
+        <p class="text-xs text-lempung">{{ sub_title }}</p>
       </div>
-      <slot name="actions"></slot> <!-- Slot for buttons (Add, Export, etc.) -->
+      <slot name="actions"></slot>
     </div>
 
     <!-- Grid Layout (Left & Right Same Height) -->
     <div class="m-4 grid grid-cols-12 gap-6 p-4 bg-white dark:bg-gray-900">
       <!-- Left Column (File Tree) -->
       <div class="col-span-4 bg-white dark:bg-gray-900 p-4 rounded-lg flex flex-col">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Folders</h2>
+        <h2 class="text-md font-semibold text-gray-900 dark:text-white mb-2">
+          Folders
+        </h2>
         <div class="flex-grow">
-          <slot name="tree"></slot> <!-- This content determines the height -->
+          <slot name="tree"></slot>
+          <!-- This content determines the height -->
         </div>
       </div>
 
       <!-- Right Column (File Table) -->
       <div class="col-span-8 bg-white dark:bg-gray-900 p-4 rounded-lg flex flex-col">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Files</h2>
+        <h2 class="text-md font-semibold text-gray-900 dark:text-white mb-4">
+          Files
+        </h2>
         <div class="flex-grow overflow-hidden">
-          <slot name="table"></slot> <!-- Always stretches to match left -->
+          <slot name="table"></slot>
+          <!-- Always stretches to match left -->
         </div>
       </div>
+    </div>
+
+    <div class="bg-white rounded-lg mt-4 overflow-y-auto">
+      <slot name="content"></slot>
     </div>
   </div>
 </template>
@@ -41,7 +53,7 @@ const props = defineProps({
   sub_title: {
     type: String,
     required: true,
-  }
+  },
 });
 
 // Get Navbar height dynamically

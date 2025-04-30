@@ -13,34 +13,34 @@ const emit = defineEmits(["edit", "delete"]);
 
 <template>
   <div class="p-6 bg-white rounded-lg shadow-md">
-    <VueGoodTable
-      :columns="[...props.columns, { label: 'Actions', field: 'actions' }]"
-      :rows="props.rows"
-      :pagination="{ enabled: true, perPage: 5 }"
+    <VueGoodTable :columns="[
+      ...props.columns,
+      { label: 'Actions', field: 'actions', sortable: false },
+    ]" :rows="props.rows" :pagination="{ enabled: true, perPage: 5 }"
       :search-options="{ enabled: true, placeholder: 'Search users...' }"
-      class="border rounded-lg"
-    >
+      class="border rounded-lg text-sm leading-3 justify-center">
       <template #table-row="{ column, row }">
-        <template v-if="column.field === 'name'">
-          <div>
-            <p>{{ row.name }}</p>
-          </div>
+        <!-- Id -->
+        <template v-if="column.field === 'id'">
+          <div class="py-3 text-gray-800">{{ row.id }}</div>
         </template>
+        <!-- Nama -->
+        <template v-if="column.field === 'name'">
+          <div class="py-3 text-gray-800">{{ row.name }}</div>
+        </template>
+
+        <!-- Actions (Edit & Delete) -->
         <template v-if="column.field === 'actions'">
-          <div class="flex space-x-2">
+          <div class="flex space-x-2 justify-center items-center">
             <!-- Edit Button -->
-            <button
-              @click="emit('edit', row)"
-              class="p-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-200 hover:border-blue-800 flex items-center transition"
-            >
+            <button @click="emit('edit', row)"
+              class="p-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-100 flex items-center transition">
               <PencilIcon class="w-5 h-5" />
             </button>
 
             <!-- Delete Button -->
-            <button
-              @click="emit('delete', index)"
-              class="p-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-200 hover:border-red-800 flex items-center transition"
-            >
+            <button @click="emit('delete', row)"
+              class="p-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-100 flex items-center transition">
               <TrashIcon class="w-5 h-5" />
             </button>
           </div>

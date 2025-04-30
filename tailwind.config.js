@@ -14,6 +14,11 @@ export default {
       colors: {
         greneon: "#02b679",
         "greneon-200": "#23bf73",
+        // lemon
+        lemon: "#ffdc5e",
+        "lempung-100": "#f8f1e3",
+        lempung: "#b8ba95",
+        matcha: "#39906e",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

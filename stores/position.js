@@ -7,6 +7,7 @@ export const usePositionStore = defineStore("position", {
     loading: false,
     error: null,
     position: {},
+    options: [],
   }),
   actions: {
     setPosition(positionData) {
@@ -29,6 +30,22 @@ export const usePositionStore = defineStore("position", {
       } catch (error) {
         console.error("Error fetching positions:", error);
         this.error = error.message;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async getOption() {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const positionService = usePositionService();
+        const res = await positionService.getOption();
+        this.options = res.data;
+      } catch (error) {
+        this.error = error.message;
+        console.error(`Error getting position Option`, error);
       } finally {
         this.loading = false;
       }

@@ -1,4 +1,4 @@
-import { createPositionRepository } from "~/repositories/PositionRepositories";
+import { createPositionRepository } from "~/repositories/PositionRepository";
 
 export function usePositionService() {
   const positionRepository = createPositionRepository();
@@ -9,6 +9,10 @@ export function usePositionService() {
 
   async function getPositionById(id) {
     return await positionRepository.getPositionById(id);
+  }
+
+  async function getOption() {
+    return await positionRepository.getOptions();
   }
 
   async function createPosition(data) {
@@ -26,6 +30,7 @@ export function usePositionService() {
   return {
     getPositionById,
     getPositions,
+    getOption,
     createPosition,
     updatePosition,
     deletePosition,

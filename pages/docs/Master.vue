@@ -1,36 +1,16 @@
 <template>
-  <MasterContainer title="DOCS" sub_title="Master Docs">
+  <OuterContainer title="DOC" sub_title="Master Data" :isLoading="isLoading">
     <template #content>
-      <MasterTable :columns="columns" :rows="rows" @edit="editDocs" @delete="delDocs" />
+      <CategoryTable />
     </template>
-  </MasterContainer>
+  </OuterContainer>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import MasterContainer from "~/components/utilities/MasterContainer.vue";
-import MasterTable from "~/components/utilities/MasterTable.vue";
-
-const columns = ref([
-  { key: "id", label: "ID" },
-  { key: "type", label: "Type" },
-  { key: "category", label: "Category" },
-]);
-
-const rows = ref([
-  { id: 1, type: "Surat Masuk", category: "Surat" },
-  { id: 2, type: "Surat Keluar", category: "Surat" },
-]);
-
-const editDocs = (user) => {
-  console.log("Editing user:", user);
-};
-
-const delDocs = (index) => {
-  rows.value.splice(index, 1);
-};
+import CategoryTable from "~/components/document/CategoryTable.vue";
+import OuterContainer from "~/components/app/OuterContainer.vue";
 
 useHead({
-  title: "Master"
-})
+  title: "Doc Master",
+});
 </script>

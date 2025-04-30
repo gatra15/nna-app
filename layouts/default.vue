@@ -1,9 +1,7 @@
 <template>
-  <div class="bg-gray-100 dark:bg-gray-700">
-    <Navbar />
+  <div class="bg-matcha flex h-screen">
     <Sidebar />
-    <!-- Content -->
-    <main class="">
+    <main class="ml-56 flex-1 p-4 overflow-y-auto">
       <slot />
     </main>
   </div>
@@ -11,9 +9,8 @@
 
 <script setup>
 definePageMeta({
-  middleware: "auth"
-})
-import Navbar from "~/components/app/Navbar.vue";
+  middleware: "auth",
+});
 import Sidebar from "~/components/app/Sidebar.vue";
 </script>
 

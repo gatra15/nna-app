@@ -1,24 +1,18 @@
 <template>
-  <div
-    class="sm:ml-64 relative"
-    :style="{ paddingTop: navbarHeight + 'px', height: `calc(100vh)` }"
-  >
+  <div class="sm:ml-56 relative">
     <LoadingScreen v-if="isLoading" class="absolute inset-0 z-50" />
-    <!-- Title Navbar -->
-    <div
-      class="bg-white dark:bg-gray-800 shadow-sm px-4 py-2 items-center flex justify-between"
-    >
+    <div class="bg-white dark:bg-gray-800 shadow-sm px-4 py-2 items-center flex justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-200">{{ title }}</h1>
-        <p class="text-md text-gray-300 dark:text-gray-300">{{ sub_title }}</p>
+        <h1 class="text-sm font-bold text-gray-900 dark:text-gray-200">
+          {{ title }}
+        </h1>
+        <p class="text-xs text-gray-300 dark:text-gray-300">{{ sub_title }}</p>
       </div>
       <slot name="actions"></slot>
-      <!-- Slot for buttons (Add, Export, etc.) -->
     </div>
 
     <div class="m-4 p-4 bg-white rounded-lg dark:bg-gray-900">
       <slot name="content"></slot>
-      <!-- CRUD Table Content -->
     </div>
   </div>
 </template>

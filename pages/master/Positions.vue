@@ -1,11 +1,29 @@
+<template>
+  <OuterContainer title="MASTER" sub_title="Position" :isLoading="isLoading">
+    <template #content>
+      <div class="fixed bottom-6 right-6">
+        <button @click="openForm(null)"
+          class="text-matcha hover:text-white border border-matcha hover:bg-matcha rounded-full shadow-lg transition duration-300">
+          <PlusCircleIcon class="h-10 w-10" />
+        </button>
+      </div>
+
+      <MasterGoodTable v-if="statePage == 'table' && !isLoading" :columns="columns" :rows="positions" @edit="openForm"
+        @delete="deletePosition" />
+
+      <PositionForm v-if="statePage == 'form' && !isLoading" :position="selectedPosition" @save="handleSave"
+        @back="changeState" />
+    </template>
+  </OuterContainer>
+</template>
+
 <script setup>
 import { computed, ref, onMounted } from "vue";
 import MasterGoodTable from "~/components/utilities/MasterGoodTable.vue";
-import MasterContainer from "~/components/utilities/MasterContainer.vue";
+import OuterContainer from "~/components/app/OuterContainer.vue";
 import { PlusCircleIcon } from "@heroicons/vue/24/solid";
 import { usePositionStore } from "~/stores/position";
 import PositionForm from "~/components/positions/PositionForm.vue";
-import LoadingScreen from "~/components/utilities/LoadingScreen.vue";
 
 const positionStore = usePositionStore();
 const selectedPosition = ref(null);
@@ -59,35 +77,5 @@ useHead({
   title: "Positions",
 });
 </script>
-
-<template>
-  <MasterContainer title="MASTER" sub_title="Position" :isLoading="isLoading">
-    <template #content>
-      <div class="fixed bottom-6 right-6">
-        <button
-          @click="openForm(null)"
-          class="text-green-500 hover:text-white border border-green-500 hover:bg-green-500 rounded-full shadow-lg transition duration-300"
-        >
-          <PlusCircleIcon class="h-10 w-10" />
-        </button>
-      </div>
-
-      <MasterGoodTable
-        v-if="statePage == 'table' && !isLoading"
-        :columns="columns"
-        :rows="positions"
-        @edit="openForm"
-        @delete="deletePosition"
-      />
-
-      <PositionForm
-        v-if="statePage == 'form' && !isLoading"
-        :position="selectedPosition"
-        @save="handleSave"
-        @back="changeState"
-      />
-    </template>
-  </MasterContainer>
-</template>
 
 <style></style>

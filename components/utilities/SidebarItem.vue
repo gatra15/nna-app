@@ -1,42 +1,30 @@
 <template>
   <li>
-    <!-- Parent Menu -->
-    <button
-      @click="
-        item.children
-          ? toggleDropdown(item.text)
-          : sidebarStore.navigateTo(item.route, router)
+    <button @click="
+      item.children
+        ? toggleDropdown(item.text)
+        : sidebarStore.navigateTo(item.route, router)
       "
-      class="flex items-center justify-between w-full p-3 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+      class="group flex text-xs text-lempung-100 items-center justify-between w-full p-3 rounded-lg hover:bg-white hover:text-matcha"
       :class="{
         'font-bold': item.children || item.text === 'Dashboard',
         'font-normal': !item.children && item.text !== 'Dashboard',
-      }"
-    >
+      }">
       <span class="flex items-center gap-2">
-        <component
-          :is="icons[item.icon]"
-          class="w-6 h-6 text-gray-500 dark:text-gray-400"
-        />
-        <span>{{ item.text }}</span>
+        <component :is="icons[item.icon]" class="w-6 h-6 text-lempung group-hover:text-matcha transition-colors" />
+        <span class="group-hover:text-gray-700 transition-colors">
+          {{ item.text }}
+        </span>
       </span>
-      <ChevronDownIcon
-        v-if="item.children"
-        :class="{ 'rotate-180': openDropdowns.has(item.text) }"
-        class="w-5 h-5 transition-transform"
-      />
+      <ChevronDownIcon v-if="item.children" :class="{
+        'rotate-180': openDropdowns.has(item.text),
+        'group-hover:text-matcha': true,
+      }" class="w-5 h-5 text-lempung transition-colors" />
     </button>
 
-    <!-- Child Items -->
-    <ul v-show="openDropdowns.has(item.text)" class="py-1 space-y-1">
-      <SidebarItem
-        v-for="child in item.children"
-        :key="child.text"
-        :item="child"
-        :router="router"
-        :level="level + 1"
-        class="ml-8"
-      />
+    <ul v-show="openDropdowns.has(item.text)">
+      <SidebarItem v-for="child in item.children" :key="child.text" :item="child" :router="router" :level="level + 1"
+        class="ml-8 text-xs" />
     </ul>
   </li>
 </template>
