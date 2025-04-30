@@ -7,6 +7,7 @@ export const useUserStore = defineStore("user", {
     user: null,
     loading: false,
     error: null,
+    options: [],
   }),
 
   actions: {
@@ -57,6 +58,23 @@ export const useUserStore = defineStore("user", {
         this.user = await userService.getUser(userId);
       } catch (err) {
         this.error = err.message;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async getOption() {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const userService = useUserService();
+        const res = await userService.getOption();
+        this.options = res.data;
+        console.log("Option: ", this.options);
+      } catch (error) {
+        this.error = error.message;
+        console.error(`Error getting user Option`, error);
       } finally {
         this.loading = false;
       }

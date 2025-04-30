@@ -1,10 +1,21 @@
 <template>
   <aside
     id="logo-sidebar"
-    class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+    class="w-56 h-screen bg-matcha fixed top-0 left-0 p-4 flex flex-col"
   >
-    <div class="h-full px-3 pb-4 overflow-y-auto">
-      <ul class="space-y-2 font-medium">
+    <!-- Logo Section -->
+    <div class="flex items-center justify-center gap-2 mb-6 px-3">
+      <img
+        src="https://flowbite.com/docs/images/logo.svg"
+        class="h-8"
+        alt="Logo"
+      />
+      <span class="text-lg font-semibold text-white">NNA</span>
+    </div>
+
+    <!-- Menu Section -->
+    <div class="flex-grow px-3 pb-4 overflow-y-auto">
+      <ul class="text-xs text-white">
         <SidebarItem
           v-for="item in sidebarStore.menuItems"
           :key="item.text"
@@ -14,6 +25,11 @@
         />
       </ul>
     </div>
+
+    <!-- User Dropdown -->
+    <div class="mt-auto p-2 rounded-lg">
+      <UserDropdown />
+    </div>
   </aside>
 </template>
 
@@ -21,6 +37,7 @@
 import { useRouter } from "vue-router";
 import { useSidebarStore } from "@/stores/sidebar";
 import SidebarItem from "~/components/utilities/SidebarItem.vue";
+import UserDropdown from "~/components/app/UserDropdown.vue";
 
 const sidebarStore = useSidebarStore();
 const router = useRouter();

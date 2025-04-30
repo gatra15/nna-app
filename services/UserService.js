@@ -1,4 +1,4 @@
-import { createUserRepository } from "@/repositories/UserRepositories";
+import { createUserRepository } from "~/repositories/UserRepository";
 
 export function useUserService() {
   const userRepository = createUserRepository();
@@ -9,6 +9,10 @@ export function useUserService() {
 
   async function getUserById(userId) {
     return await userRepository.getUserById(userId);
+  }
+
+  async function getOption() {
+    return await userRepository.getOption();
   }
 
   async function getUsers() {
@@ -35,6 +39,7 @@ export function useUserService() {
     loadUser,
     getUserById,
     getUsers,
+    getOption,
     createUser,
     updateUser,
     deleteUser,

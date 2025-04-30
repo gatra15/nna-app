@@ -1,38 +1,30 @@
 <template>
   <div class="relative flex items-center ms-3">
-    <!-- User Profile Button -->
-    <div>
-      <button
-        type="button"
-        class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-        @click="toggleDropdown"
-      >
-        <span class="sr-only">Open user menu</span>
-        <img
-          class="w-8 h-8 rounded-full"
-          src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-          alt="user photo"
-        />
+    <div class="flex justify-between gap-4 text-lempung-100">
+      <button type="button"
+        class="flex text-sm bg-gray-800 rounded-full ring-2 ring-lempung-100 hover:ring-4 hover:ring-lempung"
+        @click="toggleDropdown">
+        <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+          alt="user photo" />
       </button>
+      <span class="flex items-center align-middle text-center">{{
+        userStore.user.name
+        }}</span>
     </div>
 
-    <!-- Dropdown Menu Positioned Below the Image -->
-    <div
-      v-if="dropdownOpen"
-      class="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 divide-y divide-gray-100 rounded shadow-lg dark:bg-gray-700 dark:border-gray-600 transform"
-    >
+    <div v-if="dropdownOpen"
+      class="absolute bottom-full right-0 mb-2 w-48 bg-white border border-gray-200 divide-y divide-gray-100 rounded shadow-lg transform">
       <div class="px-4 py-3">
-        <p class="text-sm text-gray-900 dark:text-white">{{ "Administrator" }}</p>
-        <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300">
-          {{ "administrator@email.com" }}
+        <p class="text-sm text-gray-900">
+          {{ userStore.user.name }}
+        </p>
+        <p class="text-sm font-medium text-gray-900 truncate">
+          {{ userStore.user.email }}
         </p>
       </div>
       <ul class="py-1">
         <li>
-          <button
-            @click="handleLogout"
-            class="block w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-greneon dark:text-gray-300 dark:hover:bg-greneon dark:hover:text-gray-100"
-          >
+          <button @click="handleLogout" class="block w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-greneon">
             Sign out
           </button>
         </li>

@@ -10,6 +10,9 @@ export const createUserRepository = () => {
     async getUserById(id) {
       return await api.request(`/users/${id}`, { method: "GET" });
     },
+    async getOption() {
+      return await api.request("/users/options", { method: "GET" });
+    },
     async getUsers() {
       return await api.request("/users", { method: "GET" });
     },

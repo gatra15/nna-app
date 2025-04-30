@@ -10,6 +10,9 @@ export const createPositionRepository = () => {
     async getPositions() {
       return await api.request("/positions", { method: "GET" });
     },
+    async getOptions() {
+      return await api.request("/positions/options", { method: "GET" });
+    },
     async createPosition(positionData) {
       return await api.request("/positions", {
         method: "POST",

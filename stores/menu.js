@@ -14,21 +14,11 @@ export const menuItems = [
   {
     text: "Master",
     icon: "CubeTransparent",
-    children: [
-      { text: "Position", route: "/master/positions" },
-      {
-        text: "Document",
-        icon: "Document",
-        children: [
-          { text: "Category", route: "/master/document/category" },
-          { text: "Type", route: "/master/document/type" },
-        ],
-      },
-    ],
+    children: [{ text: "Position", route: "/master/positions" }],
   },
   {
     text: "Docs",
-    icon: "FolderIcon",
+    icon: "FolderOuterIcon",
     children: [
       { text: "My Docs", route: "/docs/my-docs" },
       { text: "Shared with me", route: "/docs/shared" },

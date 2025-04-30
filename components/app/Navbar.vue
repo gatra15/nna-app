@@ -1,29 +1,20 @@
 <template>
-  <nav
-    class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700"
-  >
+  <nav class="fixed top-0 z-50 left-56 w-[calc(100%-224px)] bg-matcha">
     <div class="flex items-center justify-between px-4 py-3 lg:px-6">
-      <!-- Kiri: Logo + Sidebar Toggle -->
-      <div class="flex items-center gap-3">
-        <button
-          @click="sidebarStore.toggleCollapse"
-          class="flex items-center justify-center w-full text-gray-900 rounded-lg dark:text-white"
-        >
-          <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Logo" />
-          <span class="ml-2 text-xl font-semibold dark:text-white">NNA</span>
-        </button>
-      </div>
+      <!-- Kiri kosong agar navbar tetap terpotong sidebar tanpa ganggu elemen kanan -->
+      <div class="flex-1" />
 
       <!-- Kanan: Dark Mode Toggle + User Dropdown -->
       <div class="flex items-center gap-4">
-        <button
+        <!-- <button
           @click="toggleDarkMode"
-          class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
+          class="p-2 rounded-lg bg-gray-200 hover:bg-gray-300"
         >
           <MoonIcon v-if="isDark" class="w-6 h-6 text-white" />
           <SunIcon v-else class="w-6 h-6 text-gray-800" />
-        </button>
+        </button> -->
 
+        <!-- User Dropdown (Profile) -->
         <UserDropdown />
       </div>
     </div>
