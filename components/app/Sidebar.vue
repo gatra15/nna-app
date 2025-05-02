@@ -3,7 +3,7 @@
     <!-- Logo Section -->
     <div class="flex items-center justify-center gap-2 mb-6 px-3">
       <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Logo" />
-      <span class="text-lg font-semibold text-white">NNA</span>
+      <span class="text-lg font-semibold tracking-widest text-white">NDC</span>
     </div>
 
     <!-- Menu Section -->
