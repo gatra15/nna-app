@@ -8,6 +8,18 @@ export const useUserStore = defineStore("user", {
     loading: false,
     error: null,
     options: [],
+    stateOptions: [
+      {
+        id: 1,
+        text: "Active",
+        value: 1,
+      },
+      {
+        id: 2,
+        text: "Inactive",
+        value: 2,
+      },
+    ],
   }),
 
   actions: {

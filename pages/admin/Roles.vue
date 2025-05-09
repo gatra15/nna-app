@@ -1,14 +1,17 @@
 <template>
-  <OuterContainer title="ROLE" sub_title="User" :isLoading="isLoading">
-    <template #content> <CoomingSoon /> </template>
+  <OuterContainer title="ADMIN" sub_title="Role" :isLoading="isLoading">
+    <template #content>
+      <CoomingSoon />
+    </template>
   </OuterContainer>
 </template>
 
 <script setup>
-import OuterContainer from "~/components/app/OuterContainer.vue";
+import CategoryTable from "~/components/document/CategoryTable.vue";
 import CoomingSoon from "~/components/page/CoomingSoon.vue";
+import OuterContainer from "~/components/app/OuterContainer.vue";
 
 useHead({
-  title: "Role",
+  title: "Roles",
 });
 </script>

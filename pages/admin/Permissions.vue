@@ -7,9 +7,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import OuterContainer from "~/components/app/OuterContainer.vue";
+import CategoryTable from "~/components/document/CategoryTable.vue";
 import CoomingSoon from "~/components/page/CoomingSoon.vue";
+import OuterContainer from "~/components/app/OuterContainer.vue";
 
 useHead({
   title: "Permission",
