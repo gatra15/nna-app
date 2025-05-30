@@ -1,32 +1,19 @@
-import { useApi } from "@/composables/useApi";
+import { createBaseRepository } from "~/repositories/BaseRepository";
 
 export const createTypeRepository = () => {
-  const api = useApi();
+  const baseRepo = createBaseRepository("/types");
 
   return {
-    async getById(id) {
-      return await api.request(`/types/${id}`, { method: "GET" });
-    },
-    async getData() {
-      return await api.request("/types", { method: "GET" });
-    },
-    async getOption() {
+    ...baseRepo,
+
+    async getOptions() {
+      const api = useApi();
       return await api.request("/types/options", { method: "GET" });
     },
-    async create(data) {
-      return await api.request("/types", {
-        method: "POST",
-        data: data,
-      });
-    },
-    async update(id, data) {
-      return await api.request(`/types/${id}`, {
-        method: "PUT",
-        data: data,
-      });
-    },
-    async delete(id) {
-      return await api.request(`/type/${id}`, { method: "DELETE" });
+
+    async getType() {
+      const api = useApi();
+      return await api.request("/types/list", { method: "GET" });
     },
   };
 };

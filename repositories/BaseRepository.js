@@ -4,8 +4,8 @@ export const createBaseRepository = (basePath) => {
   const api = useApi();
 
   return {
-    async getData() {
-      return await api.request(basePath, { method: "GET" });
+    async getData(params = {}) {
+      return await api.request(basePath, { method: "GET", params });
     },
     async getDataById(id) {
       return await api.request(`${basePath}/${id}`, { method: "GET" });

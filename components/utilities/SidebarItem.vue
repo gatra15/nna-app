@@ -1,5 +1,5 @@
 <template>
-  <li>
+  <li v-if="!item.permission || hasPermission(item.permission)">
     <button
       @click="
         item.children
@@ -49,6 +49,7 @@ import { ref } from "vue";
 import { ChevronDownIcon } from "@heroicons/vue/24/solid";
 import { icons } from "@/composables/icons.js";
 import { useSidebarStore } from "@/stores/sidebar";
+import { useUserStore } from "@/stores/user";
 
 const props = defineProps({
   item: Object,
@@ -60,6 +61,9 @@ const props = defineProps({
 });
 
 const sidebarStore = useSidebarStore();
+const userStore = useUserStore();
+
+const hasPermission = userStore.hasPermission;
 const openDropdowns = ref(new Set());
 
 // Fungsi Toggle Dropdown Menu

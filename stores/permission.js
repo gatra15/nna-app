@@ -1,23 +1,22 @@
 import { defineStore } from "pinia";
-import { createRoleService } from "~/services/RoleService";
+import { createPermissionService } from "~/services/PermissionService";
 
-export const useRoleStore = defineStore("role", {
+export const usePermissionStore = defineStore("permission", {
   state: () => ({
     items: [],
-    role: null,
-    error: null,
-    loading: false,
-    options: [],
-    permissions: [],
     selectedItem: null,
+    options: [],
+    loading: false,
+    error: null,
+    total: 0,
   }),
 
   actions: {
-    async fetchRoles(params = {}) {
+    async fetchAll(params = {}) {
       this.loading = true;
       this.error = null;
       try {
-        const service = createRoleService();
+        const service = createPermissionService();
         let res = await service.getData(params);
 
         return {
@@ -35,7 +34,7 @@ export const useRoleStore = defineStore("role", {
       this.loading = true;
       this.error = null;
       try {
-        const service = createRoleService();
+        const service = createPermissionService();
         this.selectedItem = await service.getDataById(id);
       } catch (err) {
         this.error = err;
@@ -46,7 +45,7 @@ export const useRoleStore = defineStore("role", {
 
     async fetchOptions() {
       try {
-        const service = createRoleService();
+        const service = createPermissionService();
         this.options = await service.getOptions();
       } catch (err) {
         this.error = err;
@@ -54,42 +53,18 @@ export const useRoleStore = defineStore("role", {
     },
 
     async create(data) {
-      const service = createRoleService();
+      const service = createPermissionService();
       return await service.create(data);
     },
 
     async update(id, data) {
-      const service = createRoleService();
+      const service = createPermissionService();
       return await service.update(id, data);
     },
 
     async remove(id) {
-      const service = createRoleService();
+      const service = createPermissionService();
       return await service.delete(id);
-    },
-
-    async fetchRoleWithPermissions(roleId) {
-      this.loading = true;
-      this.error = null;
-      try {
-        const service = createRoleService();
-        const response = await service.getRoleWithPermission(roleId);
-        this.role = response.role;
-        this.permissions = response.all_permissions || [];
-      } catch (err) {
-        this.error = err;
-        this.items = [];
-        this.permissions = [];
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    clear() {
-      this.role = [];
-      this.permissions = [];
-      this.error = null;
-      this.loading = false;
     },
 
     clearSelected() {

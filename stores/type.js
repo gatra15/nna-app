@@ -16,12 +16,11 @@ export const useTypeStore = defineStore("type", {
     },
 
     async fetchTypes() {
-      this.loading = true;
       this.error = null;
 
       try {
         const typeService = useTypeService();
-        const data = await typeService.getData();
+        const data = await typeService.getType();
         this.setTypes(data);
       } catch (error) {
         this.error = error.message;
@@ -46,13 +45,13 @@ export const useTypeStore = defineStore("type", {
       }
     },
 
-    async getOption() {
+    async getOptions() {
       this.loading = true;
       this.error = null;
 
       try {
         const typeService = useTypeService();
-        const res = await typeService.getOption();
+        const res = await typeService.getOptions();
         this.options = res.data;
       } catch (error) {
         this.error = error.message;
@@ -62,7 +61,7 @@ export const useTypeStore = defineStore("type", {
       }
     },
 
-    async addType(typeData) {
+    async add(typeData) {
       try {
         const typeService = useTypeService();
         const newType = await typeService.create(typeData);
@@ -73,7 +72,7 @@ export const useTypeStore = defineStore("type", {
       }
     },
 
-    async updateType(id, typeData) {
+    async update(id, typeData) {
       try {
         const typeService = useTypeService();
         const updatedType = await typeService.update(id, typeData);
@@ -87,10 +86,10 @@ export const useTypeStore = defineStore("type", {
       }
     },
 
-    async deletetype(id) {
+    async delete(id) {
       try {
         const typeService = useTypeService();
-        await typeService.destroy(id);
+        await typeService.delete(id);
         this.types = this.types.filter((c) => c.id !== id);
       } catch (error) {
         this.error = error.message;

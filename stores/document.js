@@ -14,14 +14,17 @@ export const useDocumentStore = defineStore("document", {
       this.documents = doc;
     },
 
-    async fetchData() {
+    async fetchData(params = {}) {
       this.loading = true;
       this.error = null;
 
       try {
         const docService = useDocumentService();
-        const res = await docService.getData();
-        this.setDocument(res);
+        const res = await docService.getData(params);
+        return {
+          items: res.data,
+          total: res.total,
+        };
       } catch (error) {
         this.error = error.message;
         console.error("Error fetching documents:", error);
@@ -36,7 +39,7 @@ export const useDocumentStore = defineStore("document", {
 
       try {
         const docService = useDocumentService();
-        const res = await docService.getById(id);
+        const res = docService.getDataById(id);
         this.document = res;
       } catch (error) {
         this.error = error.message;
@@ -73,6 +76,45 @@ export const useDocumentStore = defineStore("document", {
       } catch (error) {
         this.error = error.message;
         console.error(`Error creating document: `, error);
+      }
+    },
+
+    async updateData(id, data) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const docService = useDocumentService();
+        const updatedDoc = await docService.update(id, data);
+
+        // Perbarui dokumen di state jika ditemukan
+        const index = this.documents.findIndex((doc) => doc.id === id);
+        if (index !== -1) {
+          this.documents[index] = updatedDoc;
+        }
+      } catch (error) {
+        this.error = error.message;
+        console.error("Error updating document:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async deleteData(id) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const docService = useDocumentService();
+        await docService.delete(id);
+
+        // Hapus dari state jika perlu
+        this.documents = this.documents.filter((doc) => doc.id !== id);
+      } catch (error) {
+        this.error = error.message;
+        console.error("Error deleting document:", error);
+      } finally {
+        this.loading = false;
       }
     },
   },

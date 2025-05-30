@@ -1,7 +1,9 @@
 <template>
   <div class="p-6 bg-white rounded-lg shadow-md" v-if="state === 'form'">
-    <button @click=" emit('back', 'table')"
-      class="flex items-center text-matcha gap-2 p-2 border border-matcha rounded-md hover:bg-matcha hover:text-lempung-100 mb-5 group">
+    <button
+      @click="emit('back', 'table')"
+      class="flex items-center text-matcha gap-2 p-2 border border-matcha rounded-md hover:bg-matcha hover:text-lempung-100 mb-5 group"
+    >
       <ArrowLeftIcon class="w-6 h-6 text-matcha group-hover:text-lempung-100" />
       <span>Back</span>
     </button>
@@ -27,7 +29,7 @@
 import { ArrowLeftIcon } from "@heroicons/vue/24/solid";
 import ButtonSubmit from "~/components/utilities/ButtonSubmit";
 
-const emit = defineEmits(['back', 'submitForm'])
+const emit = defineEmits(["back", "submitForm"]);
 const props = defineProps({
   buttonText: {
     required: true,
@@ -38,13 +40,12 @@ const props = defineProps({
   state: String,
 });
 
-watch(() => props.state, (val) => {
-  console.log("form: ", props.state)
-})
+watch(
+  () => props.state,
+  (val) => {}
+);
 
-onMounted(() => {
-  console.log('test')
-})
+onMounted(() => {});
 </script>
 
 <style></style>

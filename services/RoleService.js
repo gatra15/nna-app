@@ -8,9 +8,11 @@ export const createRoleService = () => {
   return {
     ...baseService,
 
-    // Metode tambahan untuk mengambil options
     async getOptions() {
       return await repository.getOptions();
+    },
+    async getRoleWithPermission(roleId) {
+      return await repository.getRoleWithPermission(roleId);
     },
   };
 };

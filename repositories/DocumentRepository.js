@@ -1,33 +1,14 @@
-import { useApi } from "@/composables/useApi";
+import { createBaseRepository } from "~/repositories/BaseRepository";
 
 export const createDocumentRepository = () => {
-  const api = useApi();
+  const baseRepo = createBaseRepository("/documents");
 
   return {
-    async getById(id) {
-      return await api.request(`/documents/${id}`, { method: "GET" });
-    },
-    async getData() {
-      return await api.request("/documents", { method: "GET" });
-    },
+    ...baseRepo,
+
     async getDocumentShare(type) {
+      const api = useApi();
       return await api.request(`/documents/shared/${type}`, { method: "GET" });
-    },
-    async create(data) {
-      return await api.request("/documents", {
-        method: "POST",
-        isMultipart: true,
-        data: data,
-      });
-    },
-    async update(id, data) {
-      return await api.request(`/documents/${id}`, {
-        method: "PUT",
-        data: data,
-      });
-    },
-    async delete(id) {
-      return await api.request(`/type/${id}`, { method: "DELETE" });
     },
   };
 };

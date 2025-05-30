@@ -30,34 +30,59 @@ const formData = ref({
 });
 
 const onChangeEmail = (val) => {
-  formData.value.email = val
-}
+  formData.value.email = val;
+};
 const onChangeName = (val) => {
-  formData.value.name = val
-}
+  formData.value.name = val;
+};
 const onChangePosition = (val) => {
-  formData.value.position_id = parseInt(val)
-}
+  formData.value.position_id = parseInt(val);
+};
 const onChangeState = (val) => {
-  formData.value.state = val
-}
+  formData.value.state = val;
+};
 const onChangeUsername = (val) => {
-  formData.value.username = val
-}
+  formData.value.username = val;
+};
 const submitForm = () => {
   emit("save", formData.value);
 };
 
 onMounted(() => {
   roleStore.fetchOptions();
-  positionStore.getOption();
-})
+  positionStore.getOptions();
+});
+
+watch(
+  () => props.user,
+  (newUser) => {
+    const roleIds = roleStore.options
+      .filter((r) => newUser.roles?.includes(r.value)) // match by role name
+      .map((r) => r.value);
+
+    if (newUser) {
+      formData.value = {
+        username: newUser.username || "",
+        name: newUser.name || "",
+        email: newUser.email || "",
+        password: "",
+        state: newUser.state ?? 1,
+        position_id: newUser.position_id || "",
+        roles: roleIds,
+      };
+      buttonText.value = "Update";
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
   <div class="p-6 bg-white rounded-lg shadow-md">
-    <button @click="emit('back', 'table')"
-      class="flex items-center text-greneon gap-2 p-2 border border-greneon rounded-md hover:bg-green-200 mb-5">
+    <button
+      @click="emit('back', 'table')"
+      class="flex items-center text-greneon gap-2 p-2 border border-greneon rounded-md hover:bg-green-200 mb-5"
+    >
       <ArrowLeftIcon class="w-6 h-6 text-greneon" />
       <span>Back</span>
     </button>
@@ -69,28 +94,54 @@ onMounted(() => {
     <form @submit.prevent="submitForm">
       <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 mb-10">
         <div class="w-full">
-          <Input label="Full Name" placeholder="Enter your full name" :model-value="formData.name"
-            @update:model-value="onChangeName" />
+          <Input
+            label="Full Name"
+            placeholder="Enter your full name"
+            :model-value="formData.name"
+            @update:model-value="onChangeName"
+          />
         </div>
         <div class="w-full">
-          <Input label="Username" placeholder="Enter your username" :model-value="formData.username"
-            @update:model-value="onChangeUsername" />
+          <Input
+            label="Username"
+            placeholder="Enter your username"
+            :model-value="formData.username"
+            @update:model-value="onChangeUsername"
+          />
         </div>
         <div class="w-full">
-          <Email label="Email" placeholder="Enter your email" :model-value="formData.email"
-            @update:model-value="onChangeEmail" />
+          <Email
+            label="Email"
+            placeholder="Enter your email"
+            :model-value="formData.email"
+            @update:model-value="onChangeEmail"
+          />
         </div>
         <div class="w-full">
-          <BaseMultipleSelect v-model="formData.roles" :options="roleStore.options" label="Roles"
-            placeholder="Select roles.." />
+          <BaseMultipleSelect
+            v-model="formData.roles"
+            :options="roleStore.options"
+            label="Roles"
+            placeholder="Select roles.."
+          />
         </div>
         <div class="w-full">
-          <Select label="Position" placeholder="Select position.." :options="positionStore.options"
-            :model-value="formData.position_id" @update:model-value="onChangePosition" />
+          <Select
+            label="Position"
+            placeholder="Select position.."
+            :options="positionStore.options"
+            :model-value="formData.position_id"
+            @update:model-value="onChangePosition"
+          />
         </div>
         <div class="w-full">
-          <Select label="State" placeholder="Select state.." :model-value="formData.state"
-            :options="userStore.stateOptions" @update:model-value="onChangeState" />
+          <Select
+            label="State"
+            placeholder="Select state.."
+            :model-value="formData.state"
+            :options="userStore.stateOptions"
+            @update:model-value="onChangeState"
+          />
         </div>
       </div>
       <div>

@@ -2,8 +2,8 @@
 import { ref, defineProps, defineEmits, computed, onMounted, onUnmounted } from "vue";
 
 const props = defineProps({
-  modelValue: Array, // Array berisi opsi yang sudah dipilih
-  options: Array, // Semua opsi yang tersedia dari API
+  modelValue: Array,
+  options: Array,
   label: String,
   placeholder: { type: String, default: "Select an option" },
 });
@@ -12,27 +12,28 @@ const emit = defineEmits(["update:modelValue"]);
 const isOpen = ref(false);
 const dropdown = ref(null);
 
-// **Gunakan computed agar tetap reaktif tanpa perlu mutasi langsung**
 const selectedOptions = computed(() =>
-  props.options.filter((option) => props.modelValue.includes(option.value))
+  props.options.filter((option) => props.modelValue.includes(parseInt(option.value, 10)))
 );
 
 const availableOptions = computed(() =>
-  props.options.filter((option) => !props.modelValue.includes(option.value))
+  props.options.filter((option) => !props.modelValue.includes(parseInt(option.value, 10)))
 );
+
+const isAllSelected = computed(() => {
+  return props.options.length > 0 && props.modelValue.length === props.options.length;
+});
 
 const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 };
 
-// **Tambahkan opsi yang dipilih ke modelValue**
 const selectOption = (option) => {
   if (!props.modelValue.includes(option.value)) {
     emit("update:modelValue", [...props.modelValue, option.value]);
   }
 };
 
-// **Hapus opsi dari modelValue**
 const removeOption = (option) => {
   emit(
     "update:modelValue",
@@ -40,7 +41,15 @@ const removeOption = (option) => {
   );
 };
 
-// **Tutup dropdown jika klik di luar area**
+const toggleSelectAll = () => {
+  if (isAllSelected.value) {
+    emit("update:modelValue", []);
+  } else {
+    const allIds = props.options.map((option) => option.value);
+    emit("update:modelValue", allIds);
+  }
+};
+
 const closeDropdown = (event) => {
   if (dropdown.value && !dropdown.value.contains(event.target)) {
     isOpen.value = false;
@@ -58,34 +67,70 @@ onUnmounted(() => {
 
 <template>
   <div class="w-full">
-    <label v-if="label" class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+    <label
+      v-if="label"
+      class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2"
+    >
       {{ label }}
     </label>
 
     <div class="relative" ref="dropdown">
       <!-- Selected Items -->
       <div
-        class="w-full flex flex-wrap items-center px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-gray-800 dark:text-white focus:ring-matcha focus:border-matcha cursor-pointer"
-        @click="toggleDropdown">
-        <span v-if="selectedOptions.length === 0" class="text-gray-400">
+        class="w-full flex flex-wrap items-center px-3 py-[0.65rem] border border-gray-300 rounded-md bg-white dark:bg-gray-800 dark:text-white focus:ring-matcha focus:border-matcha cursor-pointer"
+        @click="toggleDropdown"
+      >
+        <span v-if="selectedOptions.length === 0" class="text-gray-600 text-sm">
           {{ placeholder }}
         </span>
 
-        <div v-for="option in selectedOptions" :key="option.value"
-          class="flex items-center bg-gray-200 dark:bg-gray-700 rounded-md px-2 mr-1">
-          <span class="text-xs">{{ option.name }}</span>
-          <button @click.stop="removeOption(option)" class="ml-2 text-gray-600 dark:text-gray-300 hover:text-red-500">
+        <div
+          v-for="option in selectedOptions"
+          :key="option.value"
+          class="flex items-center bg-gray-200 dark:bg-gray-700 rounded-md px-2 mr-1"
+        >
+          <span class="text-xs">{{ option.text }}</span>
+          <button
+            @click.stop="removeOption(option)"
+            class="ml-2 text-gray-600 dark:text-gray-300 hover:text-red-500"
+          >
             ✕
           </button>
         </div>
       </div>
 
       <!-- Dropdown Options -->
-      <div v-if="isOpen && availableOptions.length > 0"
-        class="absolute z-10 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md mt-1 max-h-40 overflow-y-auto shadow-lg">
-        <div v-for="option in availableOptions" :key="option.value" @click="selectOption(option)"
-          class="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">
-          {{ option.name }}
+      <div
+        v-if="isOpen && props.options.length > 0"
+        class="absolute z-10 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg"
+      >
+        <!-- Select All Checkbox -->
+        <div
+          class="px-2 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 flex items-center"
+        >
+          <input
+            type="checkbox"
+            :checked="isAllSelected"
+            @change="toggleSelectAll"
+            class="mr-2"
+          />
+          <span class="text-sm">Select All</span>
+        </div>
+
+        <!-- Individual Options -->
+        <div
+          v-for="option in props.options"
+          :key="option.value"
+          class="px-2 py-2 flex items-center text-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+          @click="selectOption(option)"
+        >
+          <input
+            type="checkbox"
+            :checked="props.modelValue.includes(option.value)"
+            class="mr-2"
+            @click.stop
+          />
+          {{ option.text }}
         </div>
       </div>
     </div>

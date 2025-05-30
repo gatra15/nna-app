@@ -18,15 +18,18 @@ export const usePositionStore = defineStore("position", {
       this.positions = null;
     },
 
-    async fetchPosition() {
+    async fetchPosition(params = {}) {
       this.loading = true;
       this.error = null;
 
       try {
         const positionService = usePositionService();
-        const positions = await positionService.getPositions();
+        let res = await positionService.getData(params);
 
-        this.positions = positions.data;
+        return {
+          items: res.data,
+          total: res.total,
+        };
       } catch (error) {
         console.error("Error fetching positions:", error);
         this.error = error.message;
@@ -35,13 +38,13 @@ export const usePositionStore = defineStore("position", {
       }
     },
 
-    async getOption() {
+    async getOptions() {
       this.loading = true;
       this.error = null;
 
       try {
         const positionService = usePositionService();
-        const res = await positionService.getOption();
+        const res = await positionService.getOptions();
         this.options = res.data;
       } catch (error) {
         this.error = error.message;
@@ -57,7 +60,7 @@ export const usePositionStore = defineStore("position", {
 
       try {
         const positionService = usePositionService();
-        this.position = await positionService.getPositionById(positionId);
+        this.position = await positionService.getDataById(positionId);
       } catch (err) {
         this.error = err.message;
       } finally {
@@ -71,7 +74,7 @@ export const usePositionStore = defineStore("position", {
 
       try {
         const positionService = usePositionService();
-        await positionService.createPosition(positionData);
+        await positionService.create(positionData);
         await this.fetchPosition();
       } catch (err) {
         this.error = err.message;
@@ -86,7 +89,7 @@ export const usePositionStore = defineStore("position", {
 
       try {
         const positionService = usePositionService();
-        await positionService.updatePosition(positionId, positionData);
+        await positionService.update(positionId, positionData);
         await this.fetchPosition();
       } catch (err) {
         this.error = err.message;
@@ -101,7 +104,7 @@ export const usePositionStore = defineStore("position", {
 
       try {
         const positionService = usePositionService();
-        await positionService.deletePosition(positionId);
+        await positionService.delete(positionId);
         await this.fetchPosition();
       } catch (err) {
         this.error = err.message;

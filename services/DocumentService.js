@@ -1,38 +1,15 @@
 import { createDocumentRepository } from "~/repositories/DocumentRepository";
+import { createBaseService } from "~/services/BaseService";
 
 export function useDocumentService() {
-  const documentRepository = createDocumentRepository();
-
-  async function getData() {
-    return await documentRepository.getData();
-  }
-
-  async function getById(id) {
-    return await documentRepository.getById(id);
-  }
-
-  async function getDocumentShare(type) {
-    return await documentRepository.getDocumentShare(type);
-  }
-
-  async function create(data) {
-    return await documentRepository.create(data);
-  }
-
-  async function update(id, data) {
-    return await documentRepository.update(id, data);
-  }
-
-  async function destroy(id) {
-    return await documentRepository.delete(id);
-  }
+  const repository = createDocumentRepository();
+  const baseServices = createBaseService(repository);
 
   return {
-    getById,
-    getData,
-    getDocumentShare,
-    create,
-    update,
-    destroy,
+    ...baseServices,
+
+    async getDocumentShare(type) {
+      return await repository.getDocumentShare(type);
+    },
   };
 }
