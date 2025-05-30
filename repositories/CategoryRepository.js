@@ -1,32 +1,22 @@
-import { useApi } from "@/composables/useApi";
+import { createBaseRepository } from "~/repositories/BaseRepository";
 
 export const createCategoryRepository = () => {
-  const api = useApi();
+  const baseRepo = createBaseRepository("/categories");
 
   return {
-    async getById(id) {
-      return await api.request(`/categories/${id}`, { method: "GET" });
-    },
-    async getData() {
-      return await api.request("/categories/folder", { method: "GET" });
-    },
-    async getOption() {
+    ...baseRepo,
+
+    async getOptions() {
+      const api = useApi();
       return await api.request("/categories/options", { method: "GET" });
     },
-    async create(data) {
-      return await api.request("/categories", {
-        method: "POST",
-        data: data,
-      });
+    async getFolder() {
+      const api = useApi();
+      return await api.request("/categories/folder", { method: "GET" });
     },
-    async update(id, data) {
-      return await api.request(`/categories/${id}`, {
-        method: "PUT",
-        data: data,
-      });
-    },
-    async delete(id) {
-      return await api.request(`/type/${id}`, { method: "DELETE" });
+    async getList() {
+      const api = useApi();
+      return await api.request("/categories/list", { method: "GET" });
     },
   };
 };

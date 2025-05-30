@@ -1,14 +1,25 @@
 <template>
-  <div v-if="isOpen" class="fixed left-56 inset-0 z-50 flex items-center justify-center bg-matcha bg-opacity-50">
+  <div
+    v-if="isOpen"
+    class="fixed left-56 inset-0 z-50 flex items-center justify-center bg-matcha bg-opacity-50"
+  >
     <div class="bg-white p-6 rounded-lg shadow-md w-3/4 space-y-4">
-
       <!-- Breadcrumb and Back Button -->
       <div class="flex justify-between items-center space-x-4 mb-6">
         <div class="text-sm text-gray-600">
           <!-- <span>Corporate Documents &gt;&gt; Laporan (Report) &gt;&gt; Laporan Keuangan/Anggaran &gt;&gt;</span> -->
           <span class="font-semibold text-matcha">{{ data.title }}</span>
         </div>
-        <button @click="goBack" class="bg-matcha text-lempung-100 px-4 py-2 rounded-lg text-xs">
+        <button
+          @click="edit(data)"
+          class="bg-matcha text-white px-4 py-2 rounded-lg text-xs"
+        >
+          EDIT
+        </button>
+        <button
+          @click="goBack"
+          class="bg-matcha text-lempung-100 px-4 py-2 rounded-lg text-xs"
+        >
           BACK
         </button>
       </div>
@@ -27,7 +38,7 @@
           <tr>
             <td class="py-1 font-semibold text-gray-800 text-xs">Date</td>
             <td class="px-2 text-gray-600 text-xs">:</td>
-            <td class="py-1 text-gray-600 text-xs">{{ data.document_date }}</td>
+            <td class="py-1 text-gray-600 text-xs">{{ data.document_date.human }}</td>
           </tr>
 
           <!-- Title -->
@@ -41,7 +52,7 @@
           <tr>
             <td class="py-1 font-semibold text-gray-800 text-xs">Description</td>
             <td class="px-2 text-gray-600 text-xs">:</td>
-            <td class="py-1 text-gray-600 text-xs">{{ data.description }}</td>
+            <td class="py-1 text-gray-600 text-xs">{{ data.descriptions }}</td>
           </tr>
 
           <!-- Originator -->
@@ -83,14 +94,18 @@
           <tr>
             <td class="py-1 font-semibold text-gray-800 text-xs">Created At</td>
             <td class="px-2 text-gray-600 text-xs">:</td>
-            <td class="py-1 text-gray-600 text-xs">{{ data.created_at }}</td>
+            <td class="py-1 text-gray-600 text-xs">
+              {{ data.created_at ? data.created_at.human : "" }}
+            </td>
           </tr>
 
           <!-- Updated At -->
           <tr>
             <td class="py-1 font-semibold text-gray-800 text-xs">Updated At</td>
             <td class="px-2 text-gray-600 text-xs">:</td>
-            <td class="py-1 text-gray-600 text-xs">{{ data.updated_at }}</td>
+            <td class="py-1 text-gray-600 text-xs">
+              {{ data.updated_at ? data.updated_at.human : "" }}
+            </td>
           </tr>
 
           <!-- Updated By -->
@@ -104,26 +119,36 @@
           <tr>
             <td class="py-1 font-semibold text-gray-800 text-xs">Document Date</td>
             <td class="px-2 text-gray-600 text-xs">:</td>
-            <td class="py-1 text-gray-600 text-xs">{{ data.document_date }}</td>
+            <td class="py-1 text-gray-600 text-xs">{{ data.document_date.human }}</td>
           </tr>
         </tbody>
       </table>
 
       <!-- Download Link -->
       <div class="mt-4">
-        <a href="#" @click="download(data)" class="text-matcha hover:underline text-xs">
-          <span>{{ data.files.file_name }}</span>
-        </a>
+        <div v-if="!data.files || data.files.length === 0" class="text-xs text-gray-500">
+          No files available.
+        </div>
+        <div v-else class="space-y-2">
+          <div
+            v-for="(file, index) in data.files"
+            :key="index"
+            class="text-xs text-matcha hover:underline cursor-pointer"
+            @click="download(file, data.id)"
+          >
+            {{ file.file_name }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useHandlerStore } from '~/stores/handler';
+import { ref } from "vue";
+import { useHandlerStore } from "~/stores/handler";
 
-const emit = defineEmits(['goBack']);
+const emit = defineEmits(["goBack", "edit"]);
 const props = defineProps({
   isOpen: {
     type: Boolean,
@@ -132,20 +157,21 @@ const props = defineProps({
   data: {
     type: Object,
     required: true,
-  }
-})
+  },
+});
 
 const handlerStore = useHandlerStore();
 
 // Function
-const download = (data) => {
-  const fileName = data.files.file_name;
-  console.log(fileName);
-  handlerStore.downloadFile(data.id, fileName)
-}
+const download = (file, documentId) => {
+  const fileName = file.file_name;
+  handlerStore.downloadFile(documentId, fileName);
+};
 const goBack = () => {
-  // Logic for going back (you can route back to a previous page, for example)
-  emit('goBack')
+  emit("goBack");
+};
+const edit = (data) => {
+  emit("edit", data);
 };
 </script>
 

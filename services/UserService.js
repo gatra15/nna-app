@@ -1,47 +1,21 @@
 import { createUserRepository } from "~/repositories/UserRepository";
+import { createBaseService } from "~/services/BaseService";
 
 export function useUserService() {
-  const userRepository = createUserRepository();
-
-  async function loadUser() {
-    return await userRepository.getUser();
-  }
-
-  async function getUserById(userId) {
-    return await userRepository.getUserById(userId);
-  }
-
-  async function getOption() {
-    return await userRepository.getOption();
-  }
-
-  async function getUsers() {
-    return await userRepository.getUsers();
-  }
-
-  async function createUser(userData) {
-    if (!userData.email.includes("@")) {
-      throw new Error("Email tidak valid");
-    }
-
-    return await userRepository.createUser(userData);
-  }
-
-  async function updateUser(userId, userData) {
-    return await userRepository.updateUser(userId, userData);
-  }
-
-  async function deleteUser(userId) {
-    return await userRepository.deleteUser(userId);
-  }
+  const repository = createUserRepository();
+  const baseServices = createBaseService(repository);
 
   return {
-    loadUser,
-    getUserById,
-    getUsers,
-    getOption,
-    createUser,
-    updateUser,
-    deleteUser,
+    ...baseServices,
+
+    async getOptions() {
+      return await repository.getOptions();
+    },
+    async getUser() {
+      return await repository.getUser();
+    },
+    async getPermission() {
+      return await repository.getPermission();
+    },
   };
 }

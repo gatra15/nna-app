@@ -4,12 +4,12 @@
       {{ label }}
     </label>
     <select :value="modelValue" :multiple="multiple" @change="emit('update:modelValue', $event.target.value)"
-      class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white dark:bg-gray-800 dark:text-white focus:ring-matcha focus:border-matcha"
+      class="w-full px-3 py-3 border border-gray-300 text-xs rounded-md bg-white dark:bg-gray-800 dark:text-white focus:ring-matcha focus:border-matcha"
       :class="{ 'text-gray-800': !modelValue || modelValue.length === 0 }">
-      <option v-if="placeholder" value="" disabled>
+      <option class="text-gray-400 text-xs" v-if="placeholder" value="" disabled>
         {{ placeholder }}
       </option>
-      <option v-for="val in options" :key="val.id" :value="val.id">
+      <option class="text-gray-400 text-xs" v-for="val in options" :key="val.id" :value="val.id">
         {{ val.text }}
       </option>
     </select>

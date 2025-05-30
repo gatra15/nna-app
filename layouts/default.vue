@@ -11,7 +11,13 @@
 definePageMeta({
   middleware: "auth",
 });
+
 import Sidebar from "~/components/app/Sidebar.vue";
+import { useUserStore } from "@/stores/user";
+
+const userStore = useUserStore();
+
+await useAsyncData("user", () => userStore.loadUser());
 </script>
 
 <style></style>

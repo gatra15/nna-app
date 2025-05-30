@@ -1,3 +1,4 @@
+import axios from "axios";
 import { defineStore } from "pinia";
 import { useUserService } from "~/services/UserService";
 
@@ -5,17 +6,27 @@ export const useUserStore = defineStore("user", {
   state: () => ({
     users: [],
     user: null,
+    userPermission: [],
     loading: false,
     error: null,
     options: [],
+    stateOptions: [
+      { id: 1, text: "Active", value: 1 },
+      { id: 2, text: "Inactive", value: 2 },
+    ],
   }),
 
   actions: {
     setUser(userData) {
       this.user = userData;
     },
+
     clearUser() {
       this.user = null;
+    },
+
+    hasPermission(permissionName) {
+      return this.userPermission.includes(permissionName);
     },
 
     async loadUser() {
@@ -24,8 +35,8 @@ export const useUserStore = defineStore("user", {
 
       try {
         const userService = useUserService();
-        const user = await userService.loadUser();
-        this.user = user;
+        const res = await userService.getUser();
+        this.user = res;
       } catch (err) {
         this.error = err.message;
       } finally {
@@ -33,17 +44,20 @@ export const useUserStore = defineStore("user", {
       }
     },
 
-    async fetchUsers() {
+    async fetchUsers(params = {}) {
       this.loading = true;
       this.error = null;
 
       try {
         const userService = useUserService();
-        const users = await userService.getUsers();
-        this.users = users.data;
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        this.error = error.message;
+        const res = await userService.getData(params);
+        return {
+          items: res.data,
+          total: res.total,
+        };
+      } catch (err) {
+        console.error("Error fetching users:", err);
+        this.error = err.message;
       } finally {
         this.loading = false;
       }
@@ -55,7 +69,8 @@ export const useUserStore = defineStore("user", {
 
       try {
         const userService = useUserService();
-        this.user = await userService.getUser(userId);
+        const res = await userService.getDataById(userId);
+        this.user = res;
       } catch (err) {
         this.error = err.message;
       } finally {
@@ -63,20 +78,32 @@ export const useUserStore = defineStore("user", {
       }
     },
 
-    async getOption() {
+    async getOptions() {
       this.loading = true;
       this.error = null;
 
       try {
         const userService = useUserService();
-        const res = await userService.getOption();
+        const res = await userService.getOptions();
         this.options = res.data;
-        console.log("Option: ", this.options);
-      } catch (error) {
-        this.error = error.message;
-        console.error(`Error getting user Option`, error);
+      } catch (err) {
+        console.error("Error getting user options:", err);
+        this.error = err.message;
       } finally {
         this.loading = false;
+      }
+    },
+
+    async getPermission() {
+      this.error = null;
+
+      try {
+        const userService = useUserService();
+        const res = await userService.getPermission();
+        this.userPermission = res;
+      } catch (err) {
+        console.error("Error getting user permission:", err);
+        this.error = err;
       }
     },
 
@@ -86,7 +113,7 @@ export const useUserStore = defineStore("user", {
 
       try {
         const userService = useUserService();
-        await userService.createUser(userData);
+        await userService.create(userData);
         await this.fetchUsers();
       } catch (err) {
         this.error = err.message;
@@ -101,8 +128,8 @@ export const useUserStore = defineStore("user", {
 
       try {
         const userService = useUserService();
-        await userService.updateUser(userId, userData);
-        await this.fetchUsers(); // Refresh daftar user
+        await userService.update(userId, userData);
+        await this.fetchUsers();
       } catch (err) {
         this.error = err.message;
       } finally {
@@ -116,8 +143,8 @@ export const useUserStore = defineStore("user", {
 
       try {
         const userService = useUserService();
-        await userService.deleteUser(userId);
-        await this.fetchUsers(); // Refresh daftar user
+        await userService.delete(userId);
+        await this.fetchUsers();
       } catch (err) {
         this.error = err.message;
       } finally {

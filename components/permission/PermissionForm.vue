@@ -1,10 +1,10 @@
 <!-- components/position/PositionForm.vue -->
 <template>
   <BaseForm
-    title="Position"
+    title="Permission"
     :model-value="formData"
     @update:model-value="(val) => (formData = val)"
-    :is-edit="!!position?.id"
+    :is-edit="!!permission?.id"
     :button-text="buttonText"
     @submit="submitForm"
     @back="emit('back', 'table')"
@@ -14,10 +14,9 @@
     </template>
 
     <BaseInput
-      v-model="formData.name"
-      type="text"
-      label="position Name"
-      placeholder="Enter position name"
+      :model-value="formData.name"
+      @update:model-value="handleName"
+      placeholder="input permission name"
     />
   </BaseForm>
 </template>
@@ -29,21 +28,23 @@ import BaseInput from "~/components/document/master/BaseInput.vue";
 import { ref, watch, defineProps, defineEmits } from "vue";
 import { ArrowLeftIcon } from "@heroicons/vue/24/solid";
 
-const props = defineProps({ position: Object });
+const props = defineProps({ permission: Object });
 const emit = defineEmits(["save", "back"]);
+const buttonText = ref("Submit");
 
 let formData = ref({ name: "" });
 
 watch(
-  () => props.position,
+  () => props.permission,
   (newVal) => {
     formData.value = newVal ? { ...newVal } : { name: "" };
   },
   { immediate: true }
 );
 
-const buttonText = ref("Submit");
-
+const handleName = (params) => {
+  formData.value.name = params;
+};
 const submitForm = () => {
   emit("save", formData.value);
 };

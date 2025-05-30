@@ -35,6 +35,7 @@ function useAuthService() {
 
     try {
       await userStore.loadUser();
+      await userStore.getPermission();
       return true;
     } catch (error) {
       authStore.clearToken();

@@ -1,38 +1,18 @@
 import { createTypeRepository } from "~/repositories/TypeRepository";
+import { createBaseService } from "~/services/BaseService";
 
 export function useTypeService() {
-  const typeRepository = createTypeRepository();
-
-  async function getData() {
-    return await typeRepository.getData();
-  }
-
-  async function getById(id) {
-    return await typeRepository.getById(id);
-  }
-
-  async function getOption() {
-    return await typeRepository.getOption();
-  }
-
-  async function create(data) {
-    return await typeRepository.create(data);
-  }
-
-  async function update(id, data) {
-    return await typeRepository.update(id, data);
-  }
-
-  async function destroy(id) {
-    return await typeRepository.delete(id);
-  }
+  const repository = createTypeRepository();
+  const baseServices = createBaseService(repository);
 
   return {
-    getById,
-    getData,
-    getOption,
-    create,
-    update,
-    destroy,
+    ...baseServices,
+
+    async getOptions() {
+      return await repository.getOptions();
+    },
+    async getType() {
+      return await repository.getType();
+    },
   };
 }

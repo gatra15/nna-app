@@ -1,7 +1,9 @@
 <template>
   <div class="container w-full max-w-full bg-white rounded-lg shadow-lg h-full p-4">
     <LoadingScreen v-if="isLoading" class="absolute ml-56 inset-0 z-50" />
-    <div class="bg-matcha rounded-sm shadow-xl px-4 py-2 items-center flex justify-between">
+    <div
+      class="bg-matcha rounded-sm shadow-xl px-4 py-2 items-center flex justify-between"
+    >
       <div>
         <h1 class="text-sm font-bold text-lempung-100">
           {{ title }}
@@ -11,7 +13,7 @@
       <slot name="actions"></slot>
     </div>
 
-    <div class="bg-white rounded-lg mt-4 overflow-y-auto">
+    <div class="bg-white rounded-lg mt-4">
       <slot name="content"></slot>
     </div>
   </div>

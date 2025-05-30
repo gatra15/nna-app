@@ -1,51 +1,107 @@
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, ref, watch } from "vue";
 import { VueGoodTable } from "vue-good-table-next";
 import "vue-good-table-next/dist/vue-good-table-next.css";
-import { PencilIcon, TrashIcon } from "@heroicons/vue/24/solid";
 
 const props = defineProps({
   columns: Array,
   rows: Array,
+  totalRows: {
+    type: Number,
+    default: 0,
+  },
+  perPage: {
+    type: Number,
+    default: 10,
+  },
+  currentPage: {
+    type: Number,
+    default: 1,
+  },
 });
-const emit = defineEmits(["edit", "delete"]);
+
+const emit = defineEmits([
+  "edit",
+  "delete",
+  "filter-change",
+  "page-change",
+  "per-page-change",
+  "search",
+]);
+
+// Reactive local pagination state
+const paginationOptions = ref({
+  enabled: true,
+  perPage: props.perPage,
+  currentPage: props.currentPage,
+  total: props.totalRows,
+  perPageDropdown: [10, 20, 50],
+  dropdownAllowAll: false,
+  mode: "records",
+});
+
+// Emit events and update paginationOptions on user interaction
+const onPageChange = ({ currentPage }) => {
+  paginationOptions.value.currentPage = currentPage;
+  emit("page-change", currentPage);
+};
+
+const onPerPageChange = ({ currentPerPage }) => {
+  paginationOptions.value.perPage = currentPerPage;
+  emit("per-page-change", currentPerPage);
+};
 </script>
 
 <template>
-  <div class="p-6 bg-white rounded-lg shadow-md">
-    <VueGoodTable :columns="[
-      ...props.columns,
-      { label: 'Actions', field: 'actions', sortable: false },
-    ]" :rows="props.rows" :pagination="{ enabled: true, perPage: 5 }"
-      :search-options="{ enabled: true, placeholder: 'Search users...' }"
-      class="border rounded-lg text-sm leading-3 justify-center">
-      <template #table-row="{ column, row }">
-        <!-- Id -->
+  <div class="p-6 bg-white rounded-lg shadow-md table-container">
+    <VueGoodTable
+      :columns="[
+        ...props.columns,
+        { label: 'Actions', field: 'actions', sortable: false },
+      ]"
+      :fixed-header="true"
+      :fixed-footer="true"
+      :rows="props.rows"
+      :total-rows="props.totalRows"
+      :pagination-options="paginationOptions"
+      :search-options="{ enabled: true, placeholder: 'Search...' }"
+      max-height="58vh"
+      v-on:page-change="onPageChange"
+      v-on:per-page-change="onPerPageChange"
+      v-on:search="(query) => emit('search', query)"
+      v-on:column-filter="(filters) => emit('filter-change', filters)"
+      class="border rounded-lg text-sm leading-3 justify-center"
+    >
+      <template #table-row="{ column, row, index }">
         <template v-if="column.field === 'id'">
-          <div class="py-3 text-gray-800">{{ row.id }}</div>
+          <div class="py-1 pl-2 text-gray-800 text-sm">{{ index + 1 }}</div>
         </template>
-        <!-- Nama -->
         <template v-if="column.field === 'name'">
-          <div class="py-3 text-gray-800">{{ row.name }}</div>
+          <div class="py-1 pl-2 text-gray-800 text-sm">{{ row.name }}</div>
         </template>
-
-        <!-- Actions (Edit & Delete) -->
-        <template v-if="column.field === 'actions'">
-          <div class="flex space-x-2 justify-center items-center">
-            <!-- Edit Button -->
-            <button @click="emit('edit', row)"
-              class="p-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-100 flex items-center transition">
-              <PencilIcon class="w-5 h-5" />
-            </button>
-
-            <!-- Delete Button -->
-            <button @click="emit('delete', row)"
-              class="p-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-100 flex items-center transition">
-              <TrashIcon class="w-5 h-5" />
-            </button>
-          </div>
-        </template>
+        <slot name="column" :column="column" :row="row" />
       </template>
     </VueGoodTable>
   </div>
 </template>
+
+<style scoped>
+::v-deep(.footer__row-count__select) {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background: transparent;
+  background-image: none !important;
+  padding-right: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  position: relative;
+  font-size: 0.875rem;
+  color: #333;
+}
+
+::v-deep(.vgt-table td) {
+  padding: 5px;
+}
+</style>

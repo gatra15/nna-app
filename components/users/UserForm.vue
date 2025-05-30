@@ -1,13 +1,24 @@
 <script setup>
 import { defineProps, defineEmits, ref, watch } from "vue";
 import { ArrowLeftIcon } from "@heroicons/vue/24/solid";
+import { usePositionStore } from "~/stores/position";
+import { useRoleStore } from "~/stores/role";
+import { useUserStore } from "~/stores/user";
 import BaseInput from "~/components/utilities/BaseInput";
+import Email from "~/components/utilities/Form/Email.vue";
+import Input from "~/components/utilities/Form/Input.vue";
+import Select from "~/components/utilities/Form/Select.vue";
 import BaseMultipleSelect from "~/components/utilities/BaseMultipleSelect.vue";
 import ButtonSubmit from "~/components/utilities/ButtonSubmit";
 
 const props = defineProps({ user: Object });
 const emit = defineEmits(["save", "back"]);
 
+const positionStore = usePositionStore();
+const roleStore = useRoleStore();
+const userStore = useUserStore();
+
+const buttonText = ref("Submit");
 const formData = ref({
   username: "",
   name: "",
@@ -18,48 +29,52 @@ const formData = ref({
   roles: [],
 });
 
-watch(
-  () => props.user,
-  (newValue) => {
-    formData.value = newValue
-      ? { ...newValue }
-      : {
-          username: "",
-          name: "",
-          email: "",
-          state: "",
-          position_id: "",
-          roles: [],
-        };
-  },
-  { immediate: true }
-);
-
-const rolesOptions = [
-  { value: "Administrator", name: "Administrator" },
-  { value: "User", name: "User" },
-  { value: "Director", name: "Director" },
-  { value: "Manager", name: "Manager" },
-  { value: "Staff", name: "Staff" },
-];
-
-const stateOptions = [
-  { value: 1, name: "active" },
-  { value: 2, name: "inactive" },
-];
-
-const positionOptions = [
-  { value: 1, name: "Director" },
-  { value: 2, name: "Manager" },
-  { value: 3, name: "Staff" },
-  { value: 4, name: "Other" },
-];
-
+const onChangeEmail = (val) => {
+  formData.value.email = val;
+};
+const onChangeName = (val) => {
+  formData.value.name = val;
+};
+const onChangePosition = (val) => {
+  formData.value.position_id = parseInt(val);
+};
+const onChangeState = (val) => {
+  formData.value.state = val;
+};
+const onChangeUsername = (val) => {
+  formData.value.username = val;
+};
 const submitForm = () => {
   emit("save", formData.value);
 };
 
-const buttonText = ref("Submit");
+onMounted(() => {
+  roleStore.fetchOptions();
+  positionStore.getOptions();
+});
+
+watch(
+  () => props.user,
+  (newUser) => {
+    const roleIds = roleStore.options
+      .filter((r) => newUser.roles?.includes(r.value)) // match by role name
+      .map((r) => r.value);
+
+    if (newUser) {
+      formData.value = {
+        username: newUser.username || "",
+        name: newUser.name || "",
+        email: newUser.email || "",
+        password: "",
+        state: newUser.state ?? 1,
+        position_id: newUser.position_id || "",
+        roles: roleIds,
+      };
+      buttonText.value = "Update";
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -79,57 +94,59 @@ const buttonText = ref("Submit");
     <form @submit.prevent="submitForm">
       <div class="grid gap-4 sm:grid-cols-2 sm:gap-6 mb-10">
         <div class="w-full">
-          <BaseInput
-            v-model="formData.name"
-            type="text"
+          <Input
             label="Full Name"
             placeholder="Enter your full name"
+            :model-value="formData.name"
+            @update:model-value="onChangeName"
           />
         </div>
         <div class="w-full">
-          <BaseInput
-            v-model="formData.username"
-            type="text"
+          <Input
             label="Username"
             placeholder="Enter your username"
+            :model-value="formData.username"
+            @update:model-value="onChangeUsername"
           />
         </div>
         <div class="w-full">
-          <BaseInput
-            v-model="formData.email"
-            type="email"
+          <Email
             label="Email"
             placeholder="Enter your email"
+            :model-value="formData.email"
+            @update:model-value="onChangeEmail"
           />
         </div>
         <div class="w-full">
           <BaseMultipleSelect
             v-model="formData.roles"
-            :options="rolesOptions"
+            :options="roleStore.options"
             label="Roles"
             placeholder="Select roles.."
           />
         </div>
         <div class="w-full">
-          <BaseInput
-            v-model="formData.position_id"
-            :options="positionOptions"
+          <Select
             label="Position"
-            type="select"
             placeholder="Select position.."
+            :options="positionStore.options"
+            :model-value="formData.position_id"
+            @update:model-value="onChangePosition"
           />
         </div>
         <div class="w-full">
-          <BaseInput
-            v-model="formData.state"
-            :options="stateOptions"
+          <Select
             label="State"
-            type="select"
             placeholder="Select state.."
+            :model-value="formData.state"
+            :options="userStore.stateOptions"
+            @update:model-value="onChangeState"
           />
         </div>
       </div>
-      <div><ButtonSubmit :text="buttonText" /></div>
+      <div>
+        <ButtonSubmit :text="buttonText" />
+      </div>
     </form>
   </div>
 </template>

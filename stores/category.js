@@ -8,6 +8,8 @@ export const useCategoryStore = defineStore("category", {
     error: null,
     loading: false,
     options: [],
+    folder: [],
+    list: [],
   }),
 
   actions: {
@@ -15,13 +17,13 @@ export const useCategoryStore = defineStore("category", {
       this.categories = categories;
     },
 
-    async fetchCategories() {
+    async fetchAll(params = {}) {
       this.loading = true;
       this.error = null;
 
       try {
         const categoryService = useCategoryService();
-        const data = await categoryService.fetchCategories();
+        const data = await categoryService.fetchAll(params);
         this.setCategories(data);
       } catch (error) {
         this.error = error.message;
@@ -31,13 +33,46 @@ export const useCategoryStore = defineStore("category", {
       }
     },
 
-    async fetchCategoryById(id) {
+    async getFolder() {
       this.loading = true;
       this.error = null;
 
       try {
         const categoryService = useCategoryService();
-        this.category = await categoryService.fetchCategoryById(id);
+        const data = await categoryService.getFolder();
+        this.folder = data;
+      } catch (error) {
+        this.error = error.message;
+        console.error("Error fetching categories:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async getList() {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const categoryService = useCategoryService();
+        const data = await categoryService.getList();
+        this.list = data;
+      } catch (err) {
+        this.error = err.message;
+        console.error("Error getting list categories:", this.error);
+        this.loading = false;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchById(id) {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const categoryService = useCategoryService();
+        this.category = await categoryService.getDataById(id);
       } catch (error) {
         this.error = error.message;
         console.error(`Error fetching category ID ${id}:`, error);
@@ -46,14 +81,14 @@ export const useCategoryStore = defineStore("category", {
       }
     },
 
-    async getOption() {
+    async getOptions() {
       this.loading = true;
       this.error = null;
 
       try {
         const categoryService = useCategoryService();
-        const res = await categoryService.getOption();
-        this.options = res;
+        const res = await categoryService.getOptions();
+        this.options = res.data;
       } catch (error) {
         this.error = error.message;
         console.error(`Error getting category Option`, error);
@@ -62,10 +97,10 @@ export const useCategoryStore = defineStore("category", {
       }
     },
 
-    async addCategory(categoryData) {
+    async create(categoryData) {
       try {
         const categoryService = useCategoryService();
-        const newCategory = await categoryService.createCategory(categoryData);
+        const newCategory = await categoryService.create(categoryData);
         this.categories.push(newCategory);
       } catch (error) {
         this.error = error.message;
@@ -73,13 +108,10 @@ export const useCategoryStore = defineStore("category", {
       }
     },
 
-    async updateCategory(id, categoryData) {
+    async update(id, categoryData) {
       try {
         const categoryService = useCategoryService();
-        const updatedCategory = await categoryService.updateCategory(
-          id,
-          categoryData
-        );
+        const updatedCategory = await categoryService.update(id, categoryData);
         const index = this.categories.findIndex((c) => c.id === id);
         if (index !== -1) {
           this.categories[index] = updatedCategory;
@@ -90,10 +122,10 @@ export const useCategoryStore = defineStore("category", {
       }
     },
 
-    async deleteCategory(id) {
+    async delete(id) {
       try {
         const categoryService = useCategoryService();
-        await categoryService.deleteCategory(id);
+        await categoryService.delete(id);
         this.categories = this.categories.filter((c) => c.id !== id);
       } catch (error) {
         this.error = error.message;
