@@ -38,6 +38,7 @@ export const useUserStore = defineStore("user", {
         const res = await userService.getUser();
         this.user = res;
       } catch (err) {
+        this.loading = false;
         this.error = err.message;
       } finally {
         this.loading = false;

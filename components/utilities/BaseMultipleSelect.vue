@@ -13,7 +13,15 @@ const isOpen = ref(false);
 const dropdown = ref(null);
 
 const selectedOptions = computed(() =>
-  props.options.filter((option) => props.modelValue.includes(parseInt(option.value, 10)))
+  props.options.filter((option) => {
+    const value = option.value;
+
+    if (!isNaN(value) && props.modelValue.some((v) => typeof v === "number")) {
+      return props.modelValue.includes(parseInt(value, 10));
+    }
+
+    return props.modelValue.includes(value);
+  })
 );
 
 const availableOptions = computed(() =>
