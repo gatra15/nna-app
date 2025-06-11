@@ -28,5 +28,21 @@ export const useHandlerStore = defineStore("handler", {
         console.error("Error downloading the file:", error);
       }
     },
+    async getFileUrl(id) {
+      const api = useApi();
+
+      try {
+        const fileData = await api.request(`/documents/download/${id}`, {
+          responseType: "blob",
+        });
+
+        const blob = new Blob([fileData], { type: "application/pdf" }); // pastikan PDF
+        const url = URL.createObjectURL(blob);
+        return url;
+      } catch (error) {
+        console.error("Error fetching file for preview:", error);
+        return null;
+      }
+    },
   },
 });

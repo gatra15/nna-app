@@ -86,7 +86,10 @@
       </ModalForm>
       <Modal
         :data="selectedDoc"
-        :isOpen="isOpen"
+        :is-open="isOpen"
+        :is-edit="editable"
+        :is-delete="deletable"
+        @del="openDestroy"
         @edit="openEditModal"
         @go-back="closeModal"
       />
@@ -131,6 +134,8 @@ import AddButton from "~/components/utilities/Table/AddButton.vue";
 import BaseMultipleSelect from "~/components/utilities/BaseMultipleSelect.vue";
 
 // State
+const deletable = ref(true);
+const editable = ref(true);
 const isEdit = ref(false);
 const isModalOpen = ref(false);
 const isOpen = ref(false);
@@ -237,6 +242,26 @@ const openEditModal = (document) => {
   isEdit.value = true;
   isModalOpen.value = true;
   isOpen.value = false;
+};
+
+const openDestroy = async (data) => {
+  const id = data.id ?? selectedDoc.value?.id;
+  if (!id) {
+    alert("No document selected.");
+    return;
+  }
+
+  const confirmDelete = confirm("Are you sure you want to delete this document?");
+  if (!confirmDelete) return;
+
+  try {
+    await documentStore.deleteData(id);
+    await fetchData();
+    isOpen.value = false;
+  } catch (error) {
+    console.error("Error deleting document:", error);
+    alert("Failed to delete document.");
+  }
 };
 
 const submit = async () => {

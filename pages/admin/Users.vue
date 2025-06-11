@@ -29,7 +29,7 @@
             <div class="flex space-x-2 justify-center items-center">
               <button
                 v-if="hasPermission('user.update')"
-                @click="edit(row)"
+                @click="openForm(row)"
                 class="p-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-100 flex items-center transition"
               >
                 <PencilIcon class="w-4 h-4" />

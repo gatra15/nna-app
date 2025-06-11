@@ -56,6 +56,7 @@ export const useDocumentStore = defineStore("document", {
       try {
         const docService = useDocumentService();
         const res = await docService.getDocumentShare(type);
+        console.log("res: ", res);
         this.setDocument(res.data);
       } catch (error) {
         this.error = error.message;
