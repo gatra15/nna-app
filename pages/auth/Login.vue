@@ -15,6 +15,7 @@ import { ref } from "vue";
 import { useAuthService } from "@/services/AuthService";
 import AuthCard from "~/components/auth/AuthCard.vue";
 import AuthForm from "~/components/auth/AuthForm.vue";
+import Swal from "sweetalert2";
 
 definePageMeta({
   layout: "auth",
@@ -30,11 +31,25 @@ async function handleLogin(credentials) {
     errorMessage.value = "";
 
     await authService.login(credentials);
-  } catch (error) {
-    errorMessage.value = "Invalid username or password";
+  } catch ({ response }) {
+    loading.value = false;
+    handleError(response.data.message);
   } finally {
     loading.value = false;
   }
+}
+
+function handleError(message) {
+  Swal.fire({
+    title: "Error!",
+    text: message,
+    icon: "error",
+    confirmButtonText: "OK",
+  }).then(function (isConfirm) {
+    if (isConfirm) {
+      loading.value = false;
+    }
+  });
 }
 
 useHead({

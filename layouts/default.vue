@@ -3,11 +3,14 @@
     <Sidebar />
     <main class="ml-56 flex-1 p-4 overflow-y-auto">
       <slot />
+      <ChangePasswordModal />
     </main>
   </div>
 </template>
 
 <script setup>
+import ChangePasswordModal from "~/components/users/ChangePasswordModal.vue";
+
 definePageMeta({
   middleware: "auth",
 });

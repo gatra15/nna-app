@@ -21,6 +21,7 @@
     "pinia": "^2.3.1",
     "select2": "^4.1.0-rc.0",
     "simple-datatables": "^9.2.2",
+    "sweetalert2": "^11.22.0",
     "vue": "latest",
     "vue-good-table": "^2.21.11",
     "vue-good-table-next": "^0.2.2",
