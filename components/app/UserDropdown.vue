@@ -30,6 +30,14 @@
       <ul class="py-1">
         <li>
           <button
+            @click="changePass"
+            class="block w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-greneon"
+          >
+            Change Password
+          </button>
+        </li>
+        <li>
+          <button
             @click="handleLogout"
             class="block w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-greneon"
           >
@@ -43,15 +51,17 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useUserStore } from "@/stores/user";
 import { useAuthStore } from "@/stores/auth";
+import { usePasswordStore } from "@/stores/password";
+import { useUserStore } from "@/stores/user";
 import { useAuthService } from "@/services/AuthService";
 import { navigateTo } from "#app";
 
 const dropdownOpen = ref(false);
 const isHydrated = ref(false);
-const userStore = useUserStore();
 const authStore = useAuthStore();
+const passwordStore = usePasswordStore();
+const userStore = useUserStore();
 const authService = useAuthService();
 
 const toggleDropdown = () => {
@@ -61,6 +71,10 @@ const toggleDropdown = () => {
 const handleLogout = () => {
   authService.logout();
   navigateTo("/auth/login");
+};
+
+const changePass = () => {
+  passwordStore.openChangePassword();
 };
 
 onMounted(async () => {

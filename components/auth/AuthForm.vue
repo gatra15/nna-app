@@ -38,9 +38,6 @@
     >
       {{ loading ? "Sign in..." : "Sign" }}
     </button>
-    <p v-if="errorMessage" class="text-red-500 text-sm">
-      {{ errorMessage }}
-    </p>
     <div class="flex items-center justify-between">
       <div class="flex items-start">
         <p class="text-sm font-light text-gray-500">
@@ -68,36 +65,21 @@ const props = defineProps({
 
 const username = ref("");
 const password = ref("");
-const loading = ref(false);
-const errorMessage = ref("");
+const error = ref("");
 
 const handleLogin = async () => {
   if (!username.value || !password.value) {
-    errorMessage.value = "Username and password are required.";
+    error.value = "Username and password are required.";
     return;
   }
 
-  loading.value = true;
-  errorMessage.value = "";
-
-  try {
-    await new Promise((resolve) => {
-      emit("submit", {
-        username: username.value,
-        password: password.value,
-        callback: resolve,
-      });
+  await new Promise((resolve) => {
+    emit("submit", {
+      username: username.value,
+      password: password.value,
+      callback: resolve,
     });
-    if (props.errorMessage) {
-      errorMessage.value = props.errorMessage;
-    } else {
-      errorMessage.value = "";
-    }
-  } catch (error) {
-    errorMessage.value = error.message || "Login failed.";
-  } finally {
-    loading.value = false;
-  }
+  });
 };
 </script>
 

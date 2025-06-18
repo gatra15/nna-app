@@ -21,7 +21,19 @@ function useAuthService() {
       await userStore.loadUser();
       navigationService.goToDashboard();
     } catch (error) {
-      console.error("Login failed:", error);
+      throw error;
+    }
+  }
+
+  async function changePassword(payload) {
+    try {
+      const response = await api.request("/users/change-pass", {
+        method: "POST",
+        data: payload,
+      });
+
+      return response;
+    } catch (error) {
       throw error;
     }
   }
@@ -49,6 +61,7 @@ function useAuthService() {
   }
 
   return {
+    changePassword,
     checkUserSession,
     login,
     logout,
