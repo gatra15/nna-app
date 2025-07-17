@@ -10,9 +10,6 @@ export const useApi = () => {
 
   const instance = axios.create({
     baseURL: config.public.urlBase,
-    headers: {
-      "Content-Type": "application/json", // Default content type
-    },
   });
 
   instance.interceptors.request.use((config) => {
@@ -44,19 +41,28 @@ export const useApi = () => {
     if (options.isMultipart) {
       const formData = new FormData();
       for (const key in options.data) {
-        if (options.data[key] instanceof File) {
-          formData.append(key, options.data[key]);
+        const value = options.data[key];
+
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            formData.append(`${key}[]`, item);
+          });
+        } else if (value instanceof File || value instanceof Blob) {
+          formData.append(key, value);
         } else {
-          formData.append(key, options.data[key]);
+          formData.append(key, value);
         }
       }
 
-      options.headers = {
-        ...options.headers,
-        "Content-Type": "multipart/form-data",
+      const headers = { ...options.headers };
+      delete headers["Content-Type"];
+
+      const config = {
+        ...options,
+        headers,
       };
 
-      const response = await instance.post(url, formData, options);
+      const response = await instance.post(url, formData, config);
       return response.data;
     }
 

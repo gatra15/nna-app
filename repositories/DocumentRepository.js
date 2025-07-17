@@ -10,5 +10,13 @@ export const createDocumentRepository = () => {
       const api = useApi();
       return await api.request(`/documents/shared/${type}`, { method: "GET" });
     },
+    async create(data) {
+      const api = useApi();
+      return await api.request(`/documents`, {
+        method: "POST",
+        data,
+        isMultipart: true,
+      });
+    },
   };
 };
